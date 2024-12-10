@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author LENOVO
  */
-class GeneradorDeNotas {
+public class GeneradorDeNotas {
     private List<Nota> listaNotas; // Todas las notas posibles
     private Random random;
 

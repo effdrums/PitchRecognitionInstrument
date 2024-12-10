@@ -8,7 +8,7 @@ package pitchrecognitioninstrument;
  *
  * @author LENOVO
  */
-class Nota {
+public class Nota {
     private String nombre; // Ejemplo: "Do", "Mi", "La(b)"
     private float frecuencia; // Frecuencia en Hz (opcional si se usa para cálculos futuros)
 

@@ -8,7 +8,7 @@ package pitchrecognitioninstrument;
  *
  * @author LENOVO
  */
-class DetectorDeNotas {
+public class DetectorDeNotas {
     // Aquí usamos TarsosDSP para capturar y procesar audio
 
     public String detectarNota(float frecuenciaDetectada) {

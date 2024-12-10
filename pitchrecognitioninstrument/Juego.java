@@ -10,7 +10,7 @@ import java.util.Scanner;
  *
  * @author LENOVO
  */
-class Juego {
+public class Juego {
     private GeneradorDeNotas generadorDeNotas;
     private DetectorDeNotas detectorDeNotas;
     private int tiempoLimite; // Tiempo en milisegundos
