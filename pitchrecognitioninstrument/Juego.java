@@ -22,30 +22,46 @@ public class Juego {
     }
 
     public void iniciar() {
-        
+         try {
+        detectorDeNotas.inicializarMicrofono();
+        System.out.println("¡El juego comienza!");
 
-        while (true) {
-            Nota notaActual = generadorDeNotas.generarNotaAleatoria();
-            System.out.println("Toca la nota: " + notaActual.getNombre());
+            while (true) {
+                Nota notaEsperada = generadorDeNotas.generarNotaAleatoria();
+                System.out.println("Toca la nota: " + notaEsperada.getNombre());
 
-            long inicioTiempo = System.currentTimeMillis();
-            float frecuenciaDetectada = escucharNotaDelUsuario();
-            long finTiempo = System.currentTimeMillis();
+                // Esperar a que el usuario toque la nota o se agote el tiempo límite
+                boolean resultado = escucharNotaDelUsuario(notaEsperada);
 
-            if ((finTiempo - inicioTiempo) > tiempoLimite) {
-                System.out.println("¡Fallo! Tiempo excedido.");
-            } else if (!notaActual.getNombre().equals(detectorDeNotas.detectarNota(frecuenciaDetectada))) {
-                System.out.println("¡Fallo! Nota incorrecta.");
-            } else {
-                System.out.println("¡Correcto!");
+                if (resultado) {
+                    System.out.println("¡Correcto! Vamos con la siguiente nota.");
+                } else {
+                    System.out.println("Nota incorrecta o tiempo agotado. Inténtalo de nuevo.");
+                }
+
+                // Puedes añadir un pequeño descanso entre notas si lo deseas
+                Thread.sleep(1000); // Esperar 1 segundo antes de la siguiente nota
             }
+        } catch (Exception e) {
+            System.err.println("Error durante el juego: " + e.getMessage());
         }
     }
+    
+    private boolean escucharNotaDelUsuario(Nota notaEsperada) {
+        long tiempoInicio = System.currentTimeMillis();
 
-    private float escucharNotaDelUsuario() {
-        // Aquí llamamos al DetectorDeNotas y capturamos audio real con TarsosDSP
-        return 440.0f; // Simulación de nota "La" (esto será reemplazado por el audio real)
+        while (System.currentTimeMillis() - tiempoInicio < tiempoLimite) {
+            float frecuenciaDetectada = detectorDeNotas.obtenerFrecuenciaDetectada();
+
+            if (frecuenciaDetectada > 0) { // Si se detecta una frecuencia válida
+                return detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia());
+            }
+        }
+
+        // Si se agota el tiempo sin detectar una frecuencia correcta
+        return false;
     }
+
 
     private int calcularTiempoPorNivel(int nivel) {
         // Reduce el tiempo límite según el nivel
