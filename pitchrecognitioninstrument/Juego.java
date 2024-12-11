@@ -54,7 +54,14 @@ public class Juego {
             float frecuenciaDetectada = detectorDeNotas.obtenerFrecuenciaDetectada();
 
             if (frecuenciaDetectada > 0) { // Si se detecta una frecuencia válida
-                return detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia());
+                if(tiempoLimite <= 2000){
+                    return detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia());
+                }else{
+                    if(detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia())){
+                        return true;
+                    }
+                        
+                }
             }
         }
 
@@ -65,6 +72,9 @@ public class Juego {
 
     private int calcularTiempoPorNivel(int nivel) {
         // Reduce el tiempo límite según el nivel
+        if(nivel == 0){
+            return 10000;
+        }
         return Math.max(500, 2000 - (nivel * 200));
     }
 }

@@ -56,11 +56,8 @@ public class DetectorDeNotas {
      * Devuelve la frecuencia detectada si es válida y marca que ya ha sido consumida.
      */
     public synchronized float obtenerFrecuenciaDetectada() {
-        if (frecuenciaActualizada) {
-            frecuenciaActualizada = false; // Reseteamos el indicador
-            return frecuenciaDetectada;   // Devolvemos la última frecuencia válida
-        }
-        return -1; // No hay nueva frecuencia detectada
+
+        return frecuenciaDetectada; // No hay nueva frecuencia detectada
     }
 
     
@@ -85,16 +82,16 @@ public class DetectorDeNotas {
         // Usar la frecuencia actual detectada
         float frecuenciaActual = obtenerFrecuenciaDetectada();
         if (frecuenciaActual == -1) {
-            System.out.println("No se ha detectado una frecuencia válida.");
+            System.out.print("\rNo se ha detectado una frecuencia válida.");
             return false;
         }
 
         // Comprobar si está dentro del margen de la frecuencia esperada
         if (Math.abs(frecuenciaEsperada - frecuenciaActual) <= margen) {
-            System.out.println("¡Correcto! Has tocado un " + notaEsperada);
+            System.out.print("\r¡Correcto! Has tocado un " + notaEsperada);
             return true;
         } else {
-            System.out.println("Nota incorrecta. Se esperaba un " + notaEsperada
+            System.out.print("\rNota incorrecta. Se esperaba un " + frecuenciaEsperada
                     + " pero se detectó una frecuencia de " + frecuenciaActual);
             return false;
         }
