@@ -91,8 +91,8 @@ public class DetectorDeNotas {
             System.out.print("\r¡Correcto! Has tocado un " + notaEsperada);
             return true;
         } else {
-            System.out.print("\rNota incorrecta. Se esperaba un " + frecuenciaEsperada
-                    + " pero se detectó una frecuencia de " + frecuenciaActual);
+//            System.out.print("\rNota incorrecta. Se esperaba un " + frecuenciaEsperada
+//                    + " pero se detectó una frecuencia de " + frecuenciaActual);
             return false;
         }
     }

@@ -5,6 +5,7 @@
 package pitchrecognitioninstrument;
 
 import java.util.Scanner;
+import panels.GameScreen;
 
 /**
  *
@@ -14,11 +15,16 @@ public class Juego {
     private GeneradorDeNotas generadorDeNotas;
     private DetectorDeNotas detectorDeNotas;
     private int tiempoLimite; // Tiempo en milisegundos
+    private GameScreen gs; 
 
     public Juego(int nivelDificultad) {
         this.generadorDeNotas = new GeneradorDeNotas();
         this.detectorDeNotas = new DetectorDeNotas();
         this.tiempoLimite = calcularTiempoPorNivel(nivelDificultad);
+    }
+    
+    public void setGameScreen(GameScreen gs){
+        this.gs = gs;
     }
 
     public void iniciar() {
@@ -28,7 +34,11 @@ public class Juego {
 
             while (true) {
                 Nota notaEsperada = generadorDeNotas.generarNotaAleatoria();
-                System.out.println("Toca la nota: " + notaEsperada.getNombre());
+                if(gs != null){
+                    gs.setNoteLabel(notaEsperada.getNombre());
+                }else{
+                    System.out.println("Toca la nota: " + notaEsperada.getNombre());
+                }
 
                 // Esperar a que el usuario toque la nota o se agote el tiempo límite
                 boolean resultado = escucharNotaDelUsuario(notaEsperada);
