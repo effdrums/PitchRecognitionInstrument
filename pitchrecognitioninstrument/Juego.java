@@ -31,44 +31,65 @@ public class Juego {
          try {
         detectorDeNotas.inicializarMicrofono();
         System.out.println("¡El juego comienza!");
-
+        
+        boolean puedeCambiarNota = true;
+        Nota notaEsperada = generadorDeNotas.generarNotaAleatoria(); 
             while (true) {
-                Nota notaEsperada = generadorDeNotas.generarNotaAleatoria();
-                if(gs != null){
-                    gs.setNoteLabel(notaEsperada.getNombre());
-                }else{
-                    System.out.println("Toca la nota: " + notaEsperada.getNombre());
+                
+                if(puedeCambiarNota){
+                    notaEsperada = generadorDeNotas.generarNotaAleatoria();
+                    puedeCambiarNota = false;
+                    if(gs != null){
+                        gs.setNoteLabel(notaEsperada.getNombre());
+                        gs.cambiarFondo(-1);
+                        
+                    }else{
+                        System.out.println("Toca la nota: " + notaEsperada.getNombre());
+                    }
                 }
+                
 
                 // Esperar a que el usuario toque la nota o se agote el tiempo límite
-                boolean resultado = escucharNotaDelUsuario(notaEsperada);
-
-                if (resultado) {
-                    System.out.println("¡Correcto! Vamos con la siguiente nota.");
-                } else {
-                    System.out.println("Nota incorrecta o tiempo agotado. Inténtalo de nuevo.");
+                int resultado = escucharNotaDelUsuario(notaEsperada);
+                
+                
+                
+                if(gs != null){
+                    gs.cambiarFondo(resultado);
+                    if(resultado == 1 || resultado == 0){
+                        puedeCambiarNota = true;
+                        detectorDeNotas.resetFrecuenciaDetectada();
+                        Thread.sleep(1000);
+                    }
+                }else{
+                   if (resultado == 1) {
+                        System.out.println("¡Correcto! Vamos con la siguiente nota.");
+                        
+                    } else {
+                        System.out.println("Nota incorrecta o tiempo agotado. Inténtalo de nuevo.");
+                    } 
                 }
+                
 
-                // Puedes añadir un pequeño descanso entre notas si lo deseas
-                Thread.sleep(1000); // Esperar 1 segundo antes de la siguiente nota
+               
             }
         } catch (Exception e) {
             System.err.println("Error durante el juego: " + e.getMessage());
         }
     }
     
-    private boolean escucharNotaDelUsuario(Nota notaEsperada) {
+    private int escucharNotaDelUsuario(Nota notaEsperada) {
         long tiempoInicio = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - tiempoInicio < tiempoLimite) {
             float frecuenciaDetectada = detectorDeNotas.obtenerFrecuenciaDetectada();
-
+            gs.setCurrentFqLabel(Float.toString(frecuenciaDetectada));
             if (frecuenciaDetectada > 0) { // Si se detecta una frecuencia válida
-                if(tiempoLimite <= 2000){
+                if(tiempoLimite <= 10000){
                     return detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia());
                 }else{
-                    if(detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia())){
-                        return true;
+                    if(detectorDeNotas.esNotaCorrecta(notaEsperada.getNombre(), notaEsperada.getFrecuencia()) == 1){
+                        return 1;
                     }
                         
                 }
@@ -76,7 +97,7 @@ public class Juego {
         }
 
         // Si se agota el tiempo sin detectar una frecuencia correcta
-        return false;
+        return 0;
     }
 
 
@@ -85,6 +106,6 @@ public class Juego {
         if(nivel == 0){
             return 10000;
         }
-        return Math.max(500, 2000 - (nivel * 200));
+        return Math.max(500, 10000 - (nivel * 1000));
     }
 }

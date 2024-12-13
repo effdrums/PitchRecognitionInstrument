@@ -24,6 +24,9 @@ public class DetectorDeNotas {
     private static final int BUFFER_SIZE = 1024;  // Tamaño del buffer
     private static final int OVERLAP = 512;       // Solapamiento del buffer
     
+    private static int MAX_FREC; 
+    private static int MIN_FREC;
+    
     public DetectorDeNotas() {
         this.frecuenciaDetectada = -1; // Inicialmente ninguna frecuencia detectada
         this.frecuenciaActualizada = false;
@@ -59,6 +62,10 @@ public class DetectorDeNotas {
 
         return frecuenciaDetectada; // No hay nueva frecuencia detectada
     }
+    
+    public synchronized void resetFrecuenciaDetectada(){
+        frecuenciaDetectada = 0.0f;
+    }
 
     
     public String detectarNota(float frecuenciaDetectada) {
@@ -75,25 +82,31 @@ public class DetectorDeNotas {
         return "Desconocida";
     }
     
-    public boolean esNotaCorrecta(String notaEsperada, float frecuenciaEsperada) {
+    public int esNotaCorrecta(String notaEsperada, float frecuenciaEsperada) {
         // Define el margen de tolerancia (en Hz)
-        float margen = 2.0f; // Puedes ajustar este valor según la precisión deseada
+        float margen = 10.0f; // Puedes ajustar este valor según la precisión deseada
 
         // Usar la frecuencia actual detectada
         float frecuenciaActual = obtenerFrecuenciaDetectada();
         if (frecuenciaActual == -1) {
             System.out.print("\rNo se ha detectado una frecuencia válida.");
-            return false;
+            return -1;
         }
 
         // Comprobar si está dentro del margen de la frecuencia esperada
         if (Math.abs(frecuenciaEsperada - frecuenciaActual) <= margen) {
             System.out.print("\r¡Correcto! Has tocado un " + notaEsperada);
-            return true;
+            return 1;
         } else {
 //            System.out.print("\rNota incorrecta. Se esperaba un " + frecuenciaEsperada
 //                    + " pero se detectó una frecuencia de " + frecuenciaActual);
-            return false;
+            
+            if(frecuenciaActual < MIN_FREC - 100.0 || frecuenciaActual > MAX_FREC + 100.0 ){
+                return -1;
+            }else{
+                return 0;
+            }
+            
         }
     }
 }

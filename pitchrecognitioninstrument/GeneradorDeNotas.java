@@ -33,4 +33,13 @@ public class GeneradorDeNotas {
     public Nota generarNotaAleatoria() {
         return listaNotas.get(random.nextInt(listaNotas.size()));
     }
+    
+    public float getMinFreq(){
+        return this.listaNotas.get(0).getFrecuencia();
+    }
+    
+    public float getMaxFreq(){
+        int l = listaNotas.size();
+        return this.listaNotas.get(l-1).getFrecuencia();
+    }
 }
